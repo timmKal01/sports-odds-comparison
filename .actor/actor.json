@@ -1,0 +1,13 @@
+{
+    "actorSpecification": 1,
+    "name": "sports-odds-comparison",
+    "title": "Sports Odds Comparison: Best Price & Arbitrage",
+    "description": "Compare pre-game moneyline, spread and total odds across Pinnacle and Bovada for NFL, NBA, MLB, NHL, college and soccer. Best price per outcome, no-vig fair odds, arbitrage detection, and a line-movement monitor. Plain HTTP, no login, no proxies.",
+    "version": "0.1",
+    "meta": {
+        "templateId": "custom-no-proxy"
+    },
+    "input": "./input_schema.json",
+    "output": "./output_schema.json",
+    "dockerfile": "../Dockerfile"
+}

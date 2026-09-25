@@ -1,0 +1,11 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "title": "Output schema of Sports Odds Comparison",
+    "properties": {
+        "results": {
+            "type": "string",
+            "title": "Odds lines and summaries",
+            "template": "{{links.apiDefaultDatasetUrl}}/items"
+        }
+    }
+}

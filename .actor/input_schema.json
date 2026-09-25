@@ -1,0 +1,94 @@
+{
+    "title": "Sports Odds Comparison Input",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "leagues": {
+            "title": "Leagues",
+            "type": "array",
+            "editor": "select",
+            "description": "Which leagues to compare. La Liga, Bundesliga, MLS, Champions League and UFC currently come from Pinnacle only.",
+            "items": {
+                "type": "string",
+                "enum": ["nfl", "ncaaf", "nba", "wnba", "ncaab", "mlb", "nhl", "epl", "serie-a", "la-liga", "bundesliga", "mls", "ucl", "ufc"],
+                "enumTitles": ["NFL", "NCAA Football", "NBA", "WNBA", "NCAA Basketball", "MLB", "NHL", "English Premier League", "Italy Serie A", "Spain La Liga", "Germany Bundesliga", "MLS", "UEFA Champions League", "UFC"]
+            },
+            "default": ["nfl", "mlb", "epl"],
+            "prefill": ["nfl", "mlb", "epl"]
+        },
+        "books": {
+            "title": "Sportsbooks",
+            "type": "array",
+            "editor": "select",
+            "description": "Which books to compare. Best prices and arbitrage need at least two.",
+            "items": { "type": "string", "enum": ["pinnacle", "bovada"], "enumTitles": ["Pinnacle", "Bovada"] },
+            "default": ["pinnacle", "bovada"]
+        },
+        "markets": {
+            "title": "Markets",
+            "type": "array",
+            "editor": "select",
+            "description": "Full-game main lines only.",
+            "items": { "type": "string", "enum": ["moneyline", "spread", "total"], "enumTitles": ["Moneyline", "Spread / handicap", "Total (over/under)"] },
+            "default": ["moneyline", "spread", "total"]
+        },
+        "dateFrom": {
+            "title": "From date (UTC)",
+            "type": "string",
+            "editor": "datepicker",
+            "description": "Only games starting on or after this date, YYYY-MM-DD. Leave empty for everything the books have listed."
+        },
+        "dateTo": {
+            "title": "To date (UTC)",
+            "type": "string",
+            "editor": "datepicker",
+            "description": "Only games starting on or before this date, YYYY-MM-DD."
+        },
+        "oddsFormat": {
+            "title": "Odds format",
+            "type": "string",
+            "editor": "select",
+            "enum": ["both", "american", "decimal"],
+            "enumTitles": ["American and decimal", "American only", "Decimal only"],
+            "default": "both",
+            "description": "Implied probability is always included."
+        },
+        "includeSummary": {
+            "title": "Best price, fair odds and arbitrage",
+            "type": "boolean",
+            "description": "Add one summary row per game and market: the best price per outcome across books, no-vig fair probabilities, and an arbitrage flag with its margin.",
+            "default": true
+        },
+        "arbitrageOnly": {
+            "title": "Arbitrage opportunities only",
+            "type": "boolean",
+            "description": "Return only summary rows where an arbitrage exists across the selected books.",
+            "default": false
+        },
+        "mode": {
+            "title": "Mode",
+            "type": "string",
+            "editor": "select",
+            "enum": ["snapshot", "monitor"],
+            "enumTitles": ["Snapshot: every current line", "Monitor: only lines that moved since the last run"],
+            "default": "snapshot",
+            "description": "Monitor mode remembers the previous run's lines and returns only what changed, with the old price and the move in probability points. Schedule it to track line movement."
+        },
+        "monitorStoreName": {
+            "title": "Monitor memory name",
+            "type": "string",
+            "editor": "textfield",
+            "description": "Name of the key-value store that holds the last snapshot. Use a different name for each separate monitor you schedule.",
+            "default": "sports-odds-monitor"
+        },
+        "maxEvents": {
+            "title": "Max games",
+            "type": "integer",
+            "editor": "number",
+            "description": "Stop after this many games, soonest first.",
+            "default": 200,
+            "minimum": 1,
+            "maximum": 2000
+        }
+    }
+}
