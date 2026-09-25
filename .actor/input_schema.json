@@ -10,27 +10,94 @@
             "description": "Which leagues to compare. La Liga, Bundesliga, MLS, Champions League and UFC currently come from Pinnacle only.",
             "items": {
                 "type": "string",
-                "enum": ["nfl", "ncaaf", "nba", "wnba", "ncaab", "mlb", "nhl", "epl", "serie-a", "la-liga", "bundesliga", "mls", "ucl", "ufc"],
-                "enumTitles": ["NFL", "NCAA Football", "NBA", "WNBA", "NCAA Basketball", "MLB", "NHL", "English Premier League", "Italy Serie A", "Spain La Liga", "Germany Bundesliga", "MLS", "UEFA Champions League", "UFC"]
+                "enum": [
+                    "nfl",
+                    "ncaaf",
+                    "nba",
+                    "wnba",
+                    "ncaab",
+                    "mlb",
+                    "nhl",
+                    "epl",
+                    "serie-a",
+                    "la-liga",
+                    "bundesliga",
+                    "mls",
+                    "ucl",
+                    "ufc"
+                ],
+                "enumTitles": [
+                    "NFL",
+                    "NCAA Football",
+                    "NBA",
+                    "WNBA",
+                    "NCAA Basketball",
+                    "MLB",
+                    "NHL",
+                    "English Premier League",
+                    "Italy Serie A",
+                    "Spain La Liga",
+                    "Germany Bundesliga",
+                    "MLS",
+                    "UEFA Champions League",
+                    "UFC"
+                ]
             },
-            "default": ["nfl", "mlb", "epl"],
-            "prefill": ["nfl", "mlb", "epl"]
+            "default": [
+                "nfl",
+                "nba",
+                "epl"
+            ],
+            "prefill": [
+                "nfl",
+                "nba",
+                "epl"
+            ]
         },
         "books": {
             "title": "Sportsbooks",
             "type": "array",
             "editor": "select",
             "description": "Which books to compare. Best prices and arbitrage need at least two.",
-            "items": { "type": "string", "enum": ["pinnacle", "bovada"], "enumTitles": ["Pinnacle", "Bovada"] },
-            "default": ["pinnacle", "bovada"]
+            "items": {
+                "type": "string",
+                "enum": [
+                    "pinnacle",
+                    "bovada"
+                ],
+                "enumTitles": [
+                    "Pinnacle",
+                    "Bovada"
+                ]
+            },
+            "default": [
+                "pinnacle",
+                "bovada"
+            ]
         },
         "markets": {
             "title": "Markets",
             "type": "array",
             "editor": "select",
             "description": "Full-game main lines only.",
-            "items": { "type": "string", "enum": ["moneyline", "spread", "total"], "enumTitles": ["Moneyline", "Spread / handicap", "Total (over/under)"] },
-            "default": ["moneyline", "spread", "total"]
+            "items": {
+                "type": "string",
+                "enum": [
+                    "moneyline",
+                    "spread",
+                    "total"
+                ],
+                "enumTitles": [
+                    "Moneyline",
+                    "Spread / handicap",
+                    "Total (over/under)"
+                ]
+            },
+            "default": [
+                "moneyline",
+                "spread",
+                "total"
+            ]
         },
         "dateFrom": {
             "title": "From date (UTC)",
@@ -48,8 +115,16 @@
             "title": "Odds format",
             "type": "string",
             "editor": "select",
-            "enum": ["both", "american", "decimal"],
-            "enumTitles": ["American and decimal", "American only", "Decimal only"],
+            "enum": [
+                "both",
+                "american",
+                "decimal"
+            ],
+            "enumTitles": [
+                "American and decimal",
+                "American only",
+                "Decimal only"
+            ],
             "default": "both",
             "description": "Implied probability is always included."
         },
@@ -69,8 +144,14 @@
             "title": "Mode",
             "type": "string",
             "editor": "select",
-            "enum": ["snapshot", "monitor"],
-            "enumTitles": ["Snapshot: every current line", "Monitor: only lines that moved since the last run"],
+            "enum": [
+                "snapshot",
+                "monitor"
+            ],
+            "enumTitles": [
+                "Snapshot: every current line",
+                "Monitor: only lines that moved since the last run"
+            ],
             "default": "snapshot",
             "description": "Monitor mode remembers the previous run's lines and returns only what changed, with the old price and the move in probability points. Schedule it to track line movement."
         },
@@ -89,6 +170,12 @@
             "default": 200,
             "minimum": 1,
             "maximum": 2000
+        },
+        "saveRawResponses": {
+            "title": "Save raw responses (troubleshooting)",
+            "type": "boolean",
+            "description": "Also store each book's raw response in the run's key-value store. Only needed when reporting a problem.",
+            "default": false
         }
     }
 }

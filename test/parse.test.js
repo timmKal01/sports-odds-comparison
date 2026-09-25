@@ -80,3 +80,33 @@ test('line rows carry every required field', () => {
         else assert.equal(typeof r.line, 'number');
     }
 });
+
+test('Bovada split (quarter) soccer lines average both handicaps', async () => {
+    const { parseLine } = await import('../src/books/bovada.js');
+    assert.equal(parseLine({ handicap: '-0.5', handicap2: '-1.0' }), -0.75);
+    assert.equal(parseLine({ handicap: '2.5' }), 2.5);
+    assert.equal(parseLine({ handicap: '', handicap2: '' }), null);
+    assert.equal(parseLine({}), null);
+
+    // Real response: Bovada lists Chelsea's goal spread as -0.5 / -1.0.
+    const epl = parseBovada(fixture('bovada-epl-chelsea.json'), 'epl');
+    const chelsea = epl.find((e) => e.homeTeam === 'Chelsea');
+    const spread = chelsea.markets.find((m) => m.market === 'spread');
+    assert.equal(spread.outcomes.find((o) => o.side === 'home').line, -0.75);
+    assert.equal(spread.outcomes.find((o) => o.side === 'away').line, 0.75);
+});
+
+test('different lines are never compared, so no false arbitrage', () => {
+    // Pinnacle Chelsea -0.5 vs Bovada Chelsea -0.75: same prices that produced a false
+    // "arbitrage" before split lines were read correctly.
+    const game = {
+        primary: { league: 'epl', startTime: '2026-10-10T14:00:00.000Z', homeTeam: 'Chelsea', awayTeam: 'Bournemouth' },
+        byBook: {
+            pinnacle: { book: 'pinnacle', markets: [{ market: 'spread', outcomes: [{ side: 'home', label: 'Chelsea', line: -0.5, american: -120 }, { side: 'away', label: 'Bournemouth', line: 0.5, american: 103 }] }] },
+            bovada: { book: 'bovada', markets: [{ market: 'spread', outcomes: [{ side: 'home', label: 'Chelsea', line: -0.75, american: 102 }, { side: 'away', label: 'Bournemouth', line: 0.75, american: -122 }] }] },
+        },
+    };
+    const rows = summaryRows(game, opts);
+    assert.equal(rows.length, 2, 'one summary per distinct line');
+    assert.ok(rows.every((r) => r.booksCompared.length === 1 && !r.isArbitrage));
+});

@@ -77,7 +77,7 @@ Spreads and totals are only compared when the books offer the **same line**: -2.
 
 | Field | What it does |
 |---|---|
-| `leagues` | Any of `nfl`, `ncaaf`, `nba`, `wnba`, `ncaab`, `mlb`, `nhl`, `epl`, `serie-a`, `la-liga`, `bundesliga`, `mls`, `ucl`, `ufc`. Default `nfl`, `mlb`, `epl`. |
+| `leagues` | Any of `nfl`, `ncaaf`, `nba`, `wnba`, `ncaab`, `mlb`, `nhl`, `epl`, `serie-a`, `la-liga`, `bundesliga`, `mls`, `ucl`, `ufc`. Default `nfl`, `nba`, `epl`. |
 | `books` | `pinnacle`, `bovada`, or both (default). |
 | `markets` | `moneyline`, `spread`, `total`. All by default. Full-game main lines only. |
 | `dateFrom`, `dateTo` | Optional UTC dates, `YYYY-MM-DD`. |
@@ -131,6 +131,7 @@ Charged **per game returned**, not per row. A game costs the same whether you as
 - **Unmatched games.** A game is merged across books only when both team names and the start time agree. If the books spell a team differently in a way the matcher can't be sure of, the game appears once per book rather than risk pairing prices from different games.
 - **Not priced yet.** Games a book lists without odds come back as a row with `oddsStatus: "not_priced_yet"` rather than disappearing.
 - **When a book is unavailable.** The actor identifies itself honestly and spaces its requests. If a book rate-limits or refuses it, that book is skipped for the run with a note in the log, and the other book's odds are still returned. It does not use proxies or disguise itself to get around a refusal.
+- **Bovada doesn't always serve every league.** When tested from Apify's servers, Bovada returned NBA, NHL and Premier League odds but declined NFL, MLB and NCAA football. Those leagues then come from Pinnacle only, and the log says so. Coverage can change either way.
 - **Feeds can change.** These are the books' public web feeds, not documented APIs, so a book can change or restrict them at any time.
 
 ## Disclaimer

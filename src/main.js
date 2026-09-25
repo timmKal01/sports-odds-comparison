@@ -22,13 +22,14 @@ const {
     arbitrageOnly = false,
     monitorStoreName = 'sports-odds-monitor',
     maxEvents = 200,
+    saveRawResponses = false,
 } = input;
 
 /** Must match the event name configured in this Actor's pay-per-event pricing on Apify. */
 const GAME_EVENT = 'game-odds';
 
 // An empty form (first click, Apify's daily health check) runs a working default.
-const leagues = (leaguesInput?.length ? leaguesInput : ['nfl', 'mlb', 'epl']).filter((l) => {
+const leagues = (leaguesInput?.length ? leaguesInput : ['nfl', 'nba', 'epl']).filter((l) => {
     if (LEAGUES[l]) return true;
     log.warning(`Unknown league "${l}", skipping. Valid: ${Object.keys(LEAGUES).join(', ')}`);
     return false;
@@ -39,13 +40,16 @@ const fromMs = dateFrom ? Date.parse(`${dateFrom}T00:00:00Z`) : -Infinity;
 const toMs = dateTo ? Date.parse(`${dateTo}T23:59:59Z`) : Infinity;
 if (Number.isNaN(fromMs) || Number.isNaN(toMs)) throw new Error('dateFrom and dateTo must be YYYY-MM-DD.');
 
+// Troubleshooting: keep the books' raw responses in this run's key-value store.
+const saveRaw = saveRawResponses ? (key, value) => Actor.setValue(key, value) : null;
+
 // Pinnacle calls run in parallel; Bovada calls queue behind its own rate limiter in http.js.
 const jobs = [];
 for (const key of leagues) {
     const lg = LEAGUES[key];
     if (books.has('pinnacle') && lg.pinnacle) jobs.push({ book: 'pinnacle', key, run: () => fetchPinnacle(key, lg.pinnacle) });
     if (books.has('bovada')) {
-        if (lg.bovada) jobs.push({ book: 'bovada', key, run: () => fetchBovada(key, lg.bovada) });
+        if (lg.bovada) jobs.push({ book: 'bovada', key, run: () => fetchBovada(key, lg.bovada, { saveRaw }) });
         else log.info(`${lg.name} isn't available from Bovada in this actor yet; using Pinnacle only.`);
     }
 }

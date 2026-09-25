@@ -16,16 +16,30 @@ function marketType(description) {
 
 const SIDE_BY_TYPE = { H: 'home', A: 'away', D: 'draw', O: 'over', U: 'under' };
 
-export async function fetchBovada(leagueKey, path) {
+// Soccer uses split ("quarter") lines: -0.75 is half the stake on -0.5 and half on -1.
+// Bovada sends those as two handicaps; reading only the first compared a -0.75 line
+// against another book's -0.5 and produced false arbitrage flags.
+export function parseLine(price) {
+    const parts = [price?.handicap, price?.handicap2]
+        .filter((h) => h != null && h !== '')
+        .map(Number)
+        .filter(Number.isFinite);
+    if (!parts.length) return null;
+    return parts.reduce((a, c) => a + c, 0) / parts.length;
+}
+
+export async function fetchBovada(leagueKey, path, { saveRaw } = {}) {
     const groups = await fetchJson(`${BASE}/${path}?marketFilterId=def&preMatchOnly=true&lang=en`);
     if (!Array.isArray(groups)) {
-        // Bovada answers "200 {}" once it has throttled a client. That's a refusal:
-        // report it and skip Bovada for this run rather than trying to get around it.
+        // Bovada answers "200 {}" when it declines to serve a request: after a burst from
+        // one client, and for some leagues (NFL, MLB, NCAAF when tested) to cloud servers.
+        // Either way it's a refusal: report it and skip, never try to get around it.
         if (groups && typeof groups === 'object' && Object.keys(groups).length === 0) {
-            throw new BlockedError('Bovada returned an empty response, which it does while rate-limiting this client');
+            throw new BlockedError('Bovada returned no data for this league (an empty response, which it sends when it declines a request)');
         }
         throw new Error('Bovada response was not a list');
     }
+    if (saveRaw) await saveRaw(`RAW_BOVADA_${leagueKey}`, groups);
     return parseBovada(groups, leagueKey);
 }
 
@@ -52,7 +66,7 @@ export function parseBovada(groups, leagueKey) {
                             .map((o) => {
                                 const side = SIDE_BY_TYPE[o.type]
                                     ?? (o.competitorId === home.id ? 'home' : o.competitorId === away.id ? 'away' : /^(draw|tie)$/i.test(o.description ?? '') ? 'draw' : null);
-                                const line = o.price?.handicap != null && o.price.handicap !== '' ? Number(o.price.handicap) : null;
+                                const line = parseLine(o.price);
                                 return {
                                     side,
                                     label: o.description ?? side,
