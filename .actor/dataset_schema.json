@@ -1,0 +1,88 @@
+{
+    "actorSpecification": 1,
+    "fields": {},
+    "views": {
+        "overview": {
+            "title": "Overview",
+            "transformation": {
+                "fields": [
+                    "rowType",
+                    "league",
+                    "startTime",
+                    "homeTeam",
+                    "awayTeam",
+                    "market",
+                    "book",
+                    "outcomeName",
+                    "line",
+                    "priceAmerican",
+                    "priceDecimal",
+                    "impliedProb",
+                    "isArbitrage",
+                    "arbMarginPct"
+                ]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "rowType": {
+                        "label": "Row type",
+                        "format": "text"
+                    },
+                    "league": {
+                        "label": "League",
+                        "format": "text"
+                    },
+                    "startTime": {
+                        "label": "Start time",
+                        "format": "date"
+                    },
+                    "homeTeam": {
+                        "label": "Home team",
+                        "format": "text"
+                    },
+                    "awayTeam": {
+                        "label": "Away team",
+                        "format": "text"
+                    },
+                    "market": {
+                        "label": "Market",
+                        "format": "text"
+                    },
+                    "book": {
+                        "label": "Book",
+                        "format": "text"
+                    },
+                    "outcomeName": {
+                        "label": "Outcome name",
+                        "format": "text"
+                    },
+                    "line": {
+                        "label": "Line",
+                        "format": "number"
+                    },
+                    "priceAmerican": {
+                        "label": "Price american",
+                        "format": "number"
+                    },
+                    "priceDecimal": {
+                        "label": "Price decimal",
+                        "format": "number"
+                    },
+                    "impliedProb": {
+                        "label": "Implied prob",
+                        "format": "number"
+                    },
+                    "isArbitrage": {
+                        "label": "Is arbitrage",
+                        "format": "boolean"
+                    },
+                    "arbMarginPct": {
+                        "label": "Arb margin pct",
+                        "format": "number"
+                    }
+                }
+            }
+        }
+    }
+}
